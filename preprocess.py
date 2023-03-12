@@ -284,20 +284,20 @@ def edf2csv(data_path, output_path, total_tag, channels, total_seizures=None):
                     df = original_raw.to_data_frame()
                     df['label'] = None
 
-                    # if total_seizures:
-                    #     for key in seizures:
-                    #         if key == file:
-                    #             def func(x, lst: list[tuple]):
-                    #                 for start, end in lst:
-                    #                     if start <= x < end:
-                    #                         return 2
-                    #                 else:
-                    #                     return None
-                    #
-                    #             df['label'] = df['time'].apply(lambda x: func(x, lst=seizures[key]))
-                    #             break
-                    #     else:
-                    #         df['label'] = None
+                    if total_seizures:
+                        for key in seizures:
+                            if key == file:
+                                def func(x, lst: list[tuple]):
+                                    for start, end in lst:
+                                        if start <= x < end:
+                                            return 2
+                                    else:
+                                        return None
+                    
+                                df['label'] = df['time'].apply(lambda x: func(x, lst=seizures[key]))
+                                break
+                        else:
+                            df['label'] = None
 
                     preictal_lst = tag[file]['preictal']
                     interictal_lst = tag[file]['interictal']
@@ -578,9 +578,9 @@ if __name__ == '__main__':
     cut = 5
     step = 5
     total_seizures = find_seizures(data_path)
-    # res = seizures_num_and_time(total_seizures)
-    # res = pd.DataFrame(res)
-    # res.to_csv('发作次数和时间.csv', index=False)
+    res = seizures_num_and_time(total_seizures)
+    res = pd.DataFrame(res)
+    res.to_csv('发作次数和时间.csv', index=False)
 
     total_tag = search_preictal_and_interictal(data_path, total_seizures,interval=interval,preictal=preictal)
     edf2csv(data_path, output_path, total_tag, channels)
